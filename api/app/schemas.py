@@ -1,16 +1,18 @@
 """Schémas Pydantic : format des entrées et des sorties de l'API."""
 
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, StringConstraints
 
 
 class ReviewIn(BaseModel):
-    """Un avis client à analyser.
-   
-    """
+    """Un avis client à analyser : non vide (espaces ignorés), 2 000 caractères maximum."""
 
-    text: str
+    text: Annotated[
+        str,
+        StringConstraints(strip_whitespace=True, min_length=1, max_length=2000),
+        Field(description="Texte de l'avis client", examples=["Chambre propre, personnel adorable."]),
+    ]
 
 
 class SentimentOut(BaseModel):
